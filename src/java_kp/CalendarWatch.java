@@ -1,4 +1,5 @@
 package java_kp;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
@@ -7,7 +8,7 @@ import java.time.LocalDate;
  * @author kangpan
  *
  */
-public class calendarWatch {
+public class CalendarWatch {
 	public static void main(String[] args) {
 		LocalDate date = LocalDate.now();
 		int month = date.getMonthValue();
