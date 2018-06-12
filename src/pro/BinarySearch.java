@@ -1,4 +1,4 @@
-package java_kp;
+package pro;
 /**
  * 二分查找
  * @author kangpan

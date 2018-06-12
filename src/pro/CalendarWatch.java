@@ -1,4 +1,4 @@
-package java_kp;
+package pro;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
