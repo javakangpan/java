@@ -21,8 +21,8 @@ public class SerSingleton implements Serializable{
 	public static void createString() {
 		System.out.println("createString...");
 	}
-	//阻止生成新的实例，总是返回当前对象
-	private Object readResolve() {
+	//阻止生成新的实例，总是返回当前对象,形式上构造了单例
+/*	private Object readResolve() {
 		return serSingleton;
-	}
+	}*/
 }
