@@ -7,12 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
+/**
+ * 实现层级关系数
+ * @author kangpan
+ *
+ */
 public class Tree {
-
+	//封装层级对应的Node
 	private Map<Integer, List<Node>> treeMap = new HashMap<Integer, List<Node>>();
+	//接收未处理的List<Node> 和　返回处理后的List<Node>
 	private List<Node> tree = new ArrayList<Node>();
+	//数的层级 set去重　排序
 	private Set<Integer> lev = new TreeSet<Integer>();
+	//数的层级转换ArrayList
 	private List<Integer> treeLev = new ArrayList<Integer>();
 
 	public List<Node> getTree() {
@@ -22,19 +29,20 @@ public class Tree {
 	public void setTree(List<Node> tree) {
 		this.tree = tree;
 	}
-
+	//获取不同层级　比如有１级 ２级　３级　［1,2,3］
 	private void getLev() {
 		for(Node node : this.tree) {
 			this.lev.add(node.getLev());
 		}
 	}
-
+	//set转换list
 	private void getTreeLev() {
 		Iterator<Integer> it = lev.iterator();	
 		while(it.hasNext()) {
 			treeLev.add((Integer) it.next());
 		}
 	}
+	//不同层级用不同的数据　比如１级有几个对应的Node　２级有几个对应的Node(也就是Node.getLev == 对应的层级，封装在一个Ｍap)
 	private void getTreeMap() {
 		Iterator<Integer> it = lev.iterator();	
 		while(it.hasNext()) {
@@ -49,6 +57,8 @@ public class Tree {
 		}
 
 	}
+	//循环往下层找对应的子级　　比如１级去找２级有没有子级　有的话就赋值　没有继续第３级...4级　５级．．．一直到最大的级别
+	//１级结束后　接着开始2级找３级的...４级．．．一直到最大的级别(最小级别的数据在数的顶层)
 	private void getNewTree() {
 		int max = treeLev.get(treeLev.size() - 1);
 		int min =treeLev.get(0);
@@ -67,7 +77,7 @@ public class Tree {
 			}
 		}	
 	}
-	
+	//比较下一个的子级跟当前级别 是否下一个级别的数据挂在当前级别下
 	private void getResult(List<Node> nowlist,List<Node> nextlist) {
 		if(null != nowlist && nowlist.size() > 0 && null != nextlist && nextlist.size() > 0) {
 			for(Node now : nowlist) {
@@ -126,5 +136,7 @@ public class Tree {
 		tree.setTree(list);
 		System.out.println(tree.getNodeTree("",list).toString());
 		System.out.println(tree.getNodeTree().toString());
+		//[Node [name=一级, treeNode=[Node [name=二级, treeNode=[Node [name=三级, treeNode=[Node [name=四级, treeNode=[]]]], Node [name=五级, treeNode=[]]]]]]]
+		//Node [name=一级, treeNode=[Node [name=二级, treeNode=[Node [name=三级, treeNode=[Node [name=四级, treeNode=[]]]], Node [name=五级, treeNode=[]]]]]]
 	}
 }

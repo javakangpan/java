@@ -1,7 +1,11 @@
 package Tree;
 
 import java.util.List;
-
+/**
+ *
+ * @author kangpan
+ *
+ */
 public class Node {
 	
 	private String id;
