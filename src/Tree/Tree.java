@@ -42,7 +42,7 @@ public class Tree {
 			treeLev.add((Integer) it.next());
 		}
 	}
-	//不同层级用不同的数据　比如１级有几个对应的Node　２级有几个对应的Node(也就是Node.getLev == 对应的层级，封装在一个Ｍap)
+	//获取对应层级的数据　比如１级有几个对应的Node　２级有几个对应的Node(也就是Node.getLev == 对应的层级，封装在一个Ｍap)
 	private void getTreeMap() {
 		Iterator<Integer> it = lev.iterator();	
 		while(it.hasNext()) {

@@ -1,11 +1,7 @@
 package Tree;
 
 import java.util.List;
-/**
- *
- * @author kangpan
- *
- */
+
 public class Node {
 	
 	private String id;
@@ -15,7 +11,6 @@ public class Node {
 	private String hasChildren;
 	private int order;
 	private List<Node> treeNode;
-	
 	
 	public Node() {
 		super();
@@ -76,7 +71,5 @@ public class Node {
 	@Override
 	public String toString() {
 		return "Node [name=" + name + ", treeNode=" + treeNode + "]";
-	}
-	
-	
+	}	
 }
