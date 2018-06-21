@@ -20,7 +20,7 @@ public class Tree {
 	//数的层级 set去重　排序
 	private Set<Integer> lev = new TreeSet<Integer>();
 	//数的层级转换ArrayList
-	private List<Integer> treeLev = new ArrayList<Integer>();
+	//private List<Integer> treeLev = new ArrayList<Integer>();
 
 	public List<Node> getTree() {
 		return tree;
@@ -36,12 +36,12 @@ public class Tree {
 		}
 	}
 	//set转换list
-	private void getTreeLev() {
+/*	private void getTreeLev() {
 		Iterator<Integer> it = lev.iterator();	
 		while(it.hasNext()) {
 			treeLev.add((Integer) it.next());
 		}
-	}
+	}*/
 	//获取对应层级的数据　比如１级有几个对应的Node　２级有几个对应的Node(也就是Node.getLev == 对应的层级，封装在一个Ｍap)
 	private void getTreeMap() {
 		Iterator<Integer> it = lev.iterator();	
@@ -59,16 +59,16 @@ public class Tree {
 	}
 	//循环往下层找对应的子级　　比如１级去找２级有没有子级　有的话就赋值　没有继续第３级...4级　５级．．．一直到最大的级别
 	//１级结束后　接着开始2级找３级的...４级．．．一直到最大的级别(最小级别的数据在数的顶层)
-	private void getNewTree() {
+/*	private void getNewTree() {
 		int max = treeLev.get(treeLev.size() - 1);
 		int min =treeLev.get(0);
 		for(int i = min; i <= max; i++) {
 			int n = i + 1;
 			while(n <= max) {
-				if(null == treeMap.get(i) && treeMap.get(i).size() < 0 ) {
+				if(null == treeMap.get(i) || treeMap.get(i).size() < 0 ) {
 					break;
 				}
-				if(null == treeMap.get(n) && treeMap.get(n).size() < 0 ) {
+				if(null == treeMap.get(n) || treeMap.get(n).size() < 0 ) {
 					n ++;
 					continue;
 				}
@@ -76,7 +76,35 @@ public class Tree {
 				n ++;
 			}
 		}	
+	}*/
+	
+	private void getNewTree() {
+		Iterator<Integer> it = lev.iterator();
+		List<Integer> list = new ArrayList<Integer>();
+		while(it.hasNext()) {
+			list.add(it.next());
+		}
+		int max = list.get(lev.size() - 1 );
+		int min = list.get(0);
+		List<Node> nowTree = new ArrayList<Node>();
+		List<Node> nextTree = new ArrayList<Node>();
+		for(int i = min; i <= max; i++) {
+			nowTree = this.treeMap.get(i);
+			if(null == nowTree || nowTree.isEmpty()) {
+				continue;
+			}
+			int n = i + 1;
+			while(n <= max) {
+				nextTree = this.treeMap.get(n);
+				if(null == nextTree || nextTree.isEmpty()) {
+					continue;
+				}
+				getResult(nowTree, nextTree);
+				n ++;
+			}
+		}
 	}
+	
 	//比较下一个的子级跟当前级别 是否下一个级别的数据挂在当前级别下
 	private void getResult(List<Node> nowlist,List<Node> nextlist) {
 		if(null != nowlist && nowlist.size() > 0 && null != nextlist && nextlist.size() > 0) {
@@ -97,14 +125,20 @@ public class Tree {
 	}
 	
 	//非递归方法获取
-	public Node getNodeTree(){
-		if(null != this.getTree() && this.getTree().size() > 0) {
+	public List<Node> getNodeTree(){	
+		List<Node> list = new ArrayList<Node>();
+		if(null != this.getTree() && !this.getTree().isEmpty()) {
 			getLev();
-			getTreeLev();
+			//getTreeLev();
 			getTreeMap();
 			getNewTree();
+			for(Node node : this.tree) {
+				if(node.getPid().isEmpty()) {
+					list.add(node);
+				}
+			}
 		}
-		return this.tree.get(0);
+		return list;
 	}
 	
 	//递归方法
@@ -136,7 +170,7 @@ public class Tree {
 		tree.setTree(list);
 		System.out.println(tree.getNodeTree("",list).toString());
 		System.out.println(tree.getNodeTree().toString());
-		//[Node [name=一级, treeNode=[Node [name=二级, treeNode=[Node [name=三级, treeNode=[Node [name=四级, treeNode=[]]]], Node [name=五级, treeNode=[]]]]]]]
-		//Node [name=一级, treeNode=[Node [name=二级, treeNode=[Node [name=三级, treeNode=[Node [name=四级, treeNode=[]]]], Node [name=五级, treeNode=[]]]]]]
+/*		[Node [name=一级, treeNode=[Node [name=二级, treeNode=[Node [name=三级, treeNode=[Node [name=四级, treeNode=[]]]], Node [name=五级, treeNode=[]]]]]]]
+		[Node [name=一级, treeNode=[Node [name=二级, treeNode=[Node [name=三级, treeNode=[Node [name=四级, treeNode=[]]]], Node [name=五级, treeNode=[]]]]]]]*/
 	}
 }
