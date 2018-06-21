@@ -107,7 +107,6 @@ public class Tree {
 	
 	//比较下一个的子级跟当前级别 是否下一个级别的数据挂在当前级别下
 	private void getResult(List<Node> nowlist,List<Node> nextlist) {
-		if(null != nowlist && nowlist.size() > 0 && null != nextlist && nextlist.size() > 0) {
 			for(Node now : nowlist) {
 				List<Node> child = new ArrayList<Node>();
 				if(now.getHasChildren().equals("false")) {
@@ -121,7 +120,6 @@ public class Tree {
 				if(child.size() > 0)
 				now.setTreeNode(child);
 			}
-		}
 	}
 	
 	//非递归方法获取
