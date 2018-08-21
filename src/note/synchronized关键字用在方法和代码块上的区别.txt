@@ -1,0 +1,85 @@
+在Java语言中，每一个对象有一把锁。线程可以使用synchronized关键字来获取对象上的锁。synchronized关键字可应用在方法级别(粗粒度锁)或者是代码块级别(细粒度锁)。
+问题的由来：
+看到这样一个面试题：
+
+//下列两个方法有什么区别
+public synchronized void method1(){}
+ 
+public void method2(){
+ synchronized  (obj){}
+}
+synchronized用于解决同步问题，当有多条线程同时访问共享数据时，如果未进行同步，就会发生错误（局部变量和全局变量），Java提供的解决方案是：只要将操作共享数据的语句在某一时段让一个线程执行完，在执行过程中，其他线程不能进来执行可以。解决这个问题。这里在用synchronized时会有两种方式，一种是上面的同步方法，即用synchronized来修饰方法，另一种是提供的同步代码块。
+
+同步方法和同步块：
+同步方法就是在方法前加关键字synchronized，然后被同步的方法一次只能有一个线程进入，其他线程等待。
+而同步块则是在方法内部使用大括号使得一个代码块得到同步。同步块会有一个同步的”目标“，使得同步块更加灵活一些（同步块可以通过”目标“决定需要锁定的对象）。一般情况下，如果此”目标“为this，那么同步方法和同步块没有太大的区别。
+
+非静态和静态的区别主要在于（以同步方法为例）：非静态的同步方法是锁定类的实例的，而静态的同步方法是锁定类的；
+也就是说，对于非静态的同步方法，在同一时刻，一个类的一个实例中，只有一个线程能进入同步的方法。但是对于多个实例，每一个实例的一个线程都可以进入同一同步的方法。
+
+下：
+
+public class SynObj {
+    public synchronized void methodA() {
+        System.out.println("methodA.....");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+ 
+    public  void methodB() {
+        synchronized(this) {
+            System.out.pritntln("methodB.....");
+        }
+    }
+ 
+    public void methodC() {
+        String str = "sss";
+        synchronized (str) {
+            System.out.println(       "methodC.....");
+        }
+    }
+}
+public class TestSyn {
+    public static void main(String[] args) {
+        final SynObj obj = new SynObj();
+ 
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                obj.methodA();
+            }
+        });
+        t1.start();
+ 
+        Thread t2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                obj.methodB();
+            }
+        });
+        t2.start();
+ 
+        Thread t3 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                obj.methodC();
+            }
+        });
+        t3.start();
+    }
+}
+这段小代码片段打印结果如下：
+
+methodA.....
+methodC.....
+//methodB会隔一段时间才会打印出来
+methodB.....
+这段代码的打印结果是，methodA…..methodC…..会很快打印出来，methodB…..会隔一段时间才打印出来，那么methodB为什么不能像methodC那样很快被调用呢？
+
+在启动线程1调用方法A后，接着会让线程1休眠5秒钟，这时会调用方法C，注意到方法C这里用synchronized进行加锁，这里锁的对象是str这个字符串对象。但是方法B则不同，是用当前对象this进行加锁，注意到方法A直接在方法上加synchronized，这个加锁的对象是什么呢？显然，这两个方法用的是一把锁。
+
+*由这样的结果，我们就知道这样同步方法是用什么加锁的了，由于线程1在休眠，这时锁还没释放，导致线程2只有在5秒之后才能调用方法B，由此，可知两种加锁机制用的是同一个锁对象，即当前对象。
+另外，同步方法直接在方法上加synchronized实现加锁，同步代码块则在方法内部加锁，很明显，同步方法锁的范围比较大，而同步代码块范围要小点，一般同步的范围越大，性能就越差，一般需要加锁进行同步的时候，肯定是范围越小越好，这样性能更好*。
